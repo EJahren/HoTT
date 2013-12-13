@@ -10,6 +10,9 @@ Set Asymmetric Patterns.
 Section identity.
   (** There is an identity adjunction.  It does the obvious thing. *)
 
+  Local Transparent Functor.Composition.Core.compose_composition_of.
+  Local Transparent Functor.Composition.Core.compose_identity_of.
+
   Definition identity C : @Adjunction C C 1 1
     := @Build_AdjunctionUnitCounit
          C C 1 1
