@@ -114,6 +114,9 @@ Section sigT_mor.
     reflexivity.
   Qed.
 
+  Local Transparent Functor.Composition.Core.compose_composition_of.
+  Local Transparent Functor.Composition.Core.compose_identity_of.
+
   Definition sigT_mor_compat : pr1_mor o sigT_functor_mor = pr1
     := idpath.
 End sigT_mor.
