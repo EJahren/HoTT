@@ -17,7 +17,7 @@ It draws many ideas from Vladimir Voevodsky's
 Installation details are explained in the file `INSTALL.txt`. You will need to compile a
 custom version of Coq which supports the `-indices-matter` flag, universe polymorphism, and
 private types. We hope to have these pushed into standard Coq, but in the meanwhile the
-Coq version is available at https://github.com/HoTT/coq/branches/trunk.  The particular
+Coq version is available at https://github.com/mattam82/coq/branches/polyproj.  The particular
 version of Coq which the current version of this repository is compatible is bundled as
 a git submodule.
 

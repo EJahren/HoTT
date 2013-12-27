@@ -1,3 +1,4 @@
 [submodule "coq-HoTT"]
 	path = coq-HoTT
-	url = https://github.com/HoTT/coq.git
+	url = https://github.com/mattam82/coq.git
+	branch = polyproj

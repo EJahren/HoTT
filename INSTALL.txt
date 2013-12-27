@@ -119,7 +119,7 @@ At present only our fork of the Coq trunk supports these options, but we hope to
 get them into the official Coq soon. Unfortunately for you that means you will
 have to compile a version of Coq, available at
 
-   https://github.com/HoTT/coq
+   https://github.com/mattam82/coq
 
 If you have never compiled Coq you may prefer to ask a friend for help. If you
 feel brave you should try doing it yourself:
@@ -136,16 +136,15 @@ the configuration, you can run the following steps manually.
        git submodule sync
        git submodule update --init --recursive
 
-  This will give you the relevant version of HoTT/coq in the
+  This will give you the relevant version of mattam82/coq in the
   subdirectory `coq-HoTT`.
 
   Alternatively, if you have `git`, clone the fork with
 
-       git clone https://github.com/HoTT/coq.git
-       git checkout trunk
+       git clone https://github.com/mattam/coq.git --branch polyproj
 
    If you do not have git, you may still download the files as an
-   archive file at https://github.com/HoTT/coq/archive/trunk.zip (but
+   archive file at https://github.com/mattam82/coq/archive/polyproj.zip (but
    it is better for you in the long run to learn `git`).
 
 2. Compile Coq, as explained in the `INSTALL` file of Coq distribution. You will
