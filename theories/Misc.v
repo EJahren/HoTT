@@ -33,7 +33,7 @@ Lemma istrunc_nullhomotopy {n : trunc_index}
 Proof.
   apply @trunc_sigma; auto.
   intros y. apply (@trunc_forall _).
-  intros x. apply (trunc_succ (f x) y).
+  intros x. (* FIXME: Should be able to just [apply trunc_succ.] *) apply (trunc_succ _ _).
 Defined.
 
 End NullHomotopy.

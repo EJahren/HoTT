@@ -206,17 +206,21 @@ Definition sWtil_rectnd_beta_ppt (Q : Type)
   : ap (sWtil_rectnd Q scct' sppt') (sppt b y) = sppt' b y.
 Proof.
   unfold sWtil_rectnd, sppt.
-  refine (@ap_sigT_rectnd_path_sigma W' P Q _ _ (pp b) _ _ _ _ @ _). simpl.
-  admit.
+  refine (@ap_sigT_rectnd_path_sigma W' P Q _ _ (pp b) _ _ _ _ @ _); simpl.
+  (* MS: FIXME *)
+  (* Should not have to fill in arguments manually. *)
+  (*   rewrite (@W_rect_beta_pp A B f g).  *)
+  match goal with
+    | [ |- context[apD (@W_rect ?A ?B ?f ?g ?P ?cc' ?pp')] ]
+      => rewrite (@W_rect_beta_pp A B f g P cc' pp')
+  end.
+  simpl.
+  rewrite (ap10_dpath_arrow P (fun _ => Q) (pp b) _ _ _ y).
+  repeat rewrite concat_p_pp.
+  (* Now everything cancels! *)
+  rewrite ap_V, concat_pV_p, concat_pV_p, concat_pV_p, concat_Vp.
+  by apply concat_1p.
 Qed.
-(* MS: FIXME *)
-(*   rewrite (@W_rect_beta_pp A B f g).  *)
-(*   (* pose (ap10_dpath_arrow P (fun _ => Q) (pp b) _ _ _ y). *) *)
-(*   repeat rewrite concat_p_pp. *)
-(*   (* Now everything cancels! *) *)
-(*   rewrite ap_V, concat_pV_p, concat_pV_p, concat_pV_p, concat_Vp. *)
-(*   by apply concat_1p. *)
-(* Qed. *)
 
 Close Scope long_path_scope.
 
