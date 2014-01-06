@@ -18,7 +18,7 @@ Section functor.
 
   Hypothesis has_functor_categories : forall C D : cat, P (C.1 -> D.1).
 
-  Definition functor_uncurried `{fs2 : Funext}
+  Definition functor_uncurried `{fs2 : Funext, fs3 : Funext}
   : object (@functor_category fs2 (cat^op * cat) cat).
     refine (
     (* := Eval cbv zeta in *)
@@ -30,11 +30,37 @@ Section functor.
              (fun CD C'D' FG => pointwise (fst FG) (snd FG))
              (fun _ _ _ _ _ => Functor.Pointwise.Properties.composition_of _ _ _ _)
              _).
+    (** FIXME: Should just be able to use [Functor.Pointwise.Properties.identity_of]; maybe we need to use more funexts everywhere? *)
     intros.
-    pose (Functor.Pointwise.Properties.identity_of (H:=fs1) ((fst x).1) (snd x).1).
-    admit.
+    simpl.
+    Set Printing Implicit.
+    Print Functor.Pointwise.Properties.identity_of.
+    Require Import Functor.Paths.
+    path_functor.
+
+    exists (identity_of_helper _ _).
+    pose (Functor.Pointwise.Properties.identity_of (fst x).1 (snd x).1).
+    unfold identity_of in p.
+    let p' := (eval unfold p in p) in
+    match p' with
+      | path_functor'_sig _ _ (_; ?H) => pose proof H
+    end.
+    assumption.
   Defined.
 
-  Definition functor `{fs2 : Funext} : object (cat^op -> (cat -> cat))
-    := ExponentialLaws.Law4.Functors.inverse _ _ _ (@functor_uncurried fs2).
+  (** FIXME: Something is very wrong with the speed of the typechecker here...  If I define it directly, it shouldn't take forever. *)
+  Definition functor `{fs2 : Funext, fs3 : Funext, fs4 : Funext} : object (cat^op -> (cat -> cat)).
+    (* := ExponentialLaws.Law4.Functors.inverse _ _ _ (@functor_uncurried fs2 fs3). *)
+  Proof.
+    pose (@functor_uncurried fs2 fs3) as f0.
+    lazymatch type of f0 with
+    | object (?C * ?D -> ?E)%category =>
+      pose (object_of (@ExponentialLaws.Law4.Functors.inverse fs4 C D E)) as f1
+    end.
+    apply f1.
+    simpl in *.
+    clear f1.
+    exact f0.
+  Defined.
+
 End functor.
