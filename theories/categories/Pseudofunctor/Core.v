@@ -204,7 +204,7 @@ Notation "F ₁ m" := (p_morphism_of F m) : morphism_scope.*)
 
 Section lemmas.
   Local Open Scope natural_transformation_scope.
-  Context `{Funext}.
+  Context `{H : Funext}.
 
   Variable C : PreCategory.
   Variable F : Pseudofunctor C.
@@ -223,9 +223,35 @@ Section lemmas.
                         o (Category.Morphisms.idtoiso (p2 -> p1) (ap f0 (Category.Core.associativity C w x y z f g h)) : morphism _ _ _))))).
   Proof.
     simpl in *.
+    Typeclasses eauto := debug.
     let C := match goal with |- @paths (@NaturalTransformation ?C ?D ?F ?G) _ _ => constr:(C -> D)%category end in
-    apply (@iso_moveL_Vp C);
-      apply (@iso_moveL_Mp C _ _ _ _ _ _ (iso_whisker_l _ _ _ _ _ _ _)).
+    apply (@iso_moveL_Vp C).
+    simpl.
+    (** FIXME: something (typeclass resolution?) is making Coq hang here... *)
+    (*let C := match goal with |- @paths (@NaturalTransformation ?C ?D ?F ?G) _ (?f oL ?T o _) => constr:(C -> D)%category end in
+    let f := match goal with |- @paths (@NaturalTransformation ?C ?D ?F ?G) _ (?f oL ?T o _) => constr:(f) end in
+    let T := match goal with |- @paths (@NaturalTransformation ?C ?D ?F ?G) _ (?f oL ?T o _) => constr:(T) end in
+    pose (@iso_whisker_l H _ _ _ f _ _ T _).*)
+    (*
+    Print HintDb typeclass_instances.
+    let C := match goal with |- @paths (@NaturalTransformation ?C ?D ?F ?G) _ (?f oL ?T o _) => constr:(C -> D)%category end in
+    let f := match goal with |- @paths (@NaturalTransformation ?C ?D ?F ?G) _ (?f oL ?T o _) => constr:(f) end in
+    let T := match goal with |- @paths (@NaturalTransformation ?C ?D ?F ?G) _ (?f oL ?T o _) => constr:(T) end in
+    pose (@iso_whisker_l H _ _ _ f _ _ T).
+    assert (@IsIsomorphism (@functor_category H p2 p0)
+              (@Functor.Composition.Core.compose p2 p p0 f3 f2) f4
+              (@morphism_inverse (@functor_category H p2 p0) f4
+                 (@Functor.Composition.Core.compose p2 p p0 f3 f2) n H0)).
+    Definition ID (T : Type) := T.
+    Definition id {T} (x : ID T) : T := x.
+    Typeclasses Opaque ID.
+    Typeclasses Opaque id.
+    refine ((fun _ => (fun x => isisomorphism_inverse x) (id _)) _).
+    hnf.
+    trivial.
+     (** FIXME: I think [trivial] used to solve this goal, hence typeclass resolution loops because it can't find a good instance quickly, because [isisomorphism_inverse] is declared with [Hint Immediate]. *) *)
+    let C := match goal with |- @paths (@NaturalTransformation ?C ?D ?F ?G) _ _ => constr:(C -> D)%category end in
+    apply (@iso_moveL_Mp C _ _ _ _ _ _ (@iso_whisker_l _ _ _ _ _ _ _ _ (isisomorphism_inverse _))).
     path_natural_transformation.
     reflexivity.
   Qed.

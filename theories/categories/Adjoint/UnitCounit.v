@@ -149,7 +149,7 @@ Section Adjunction.
               forall (c : C) (d : D) (g : morphism D (F c) d),
                 Contr {f : morphism C c (G d)
                       | U d o F _1 f = g })
-           (@opposite_tinv _ _ (F o G) 1 (A.1))
+           (@opposite_tinv _ _ (F o G) 1 A.1)
            (fun c d g => A.2 d c g).
 
     Definition adjunction_counit__op__adjunction_unit__inv (A : AdjunctionUnit G F)

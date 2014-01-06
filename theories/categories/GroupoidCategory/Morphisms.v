@@ -28,6 +28,9 @@ Section groupoid_category.
       destruct_head @IsIsomorphism;
       compute in *;
       path_induction_hammer.
-    apply ap. admit.
+    (** FIXME: [path_induction_hammer] tries [assert (1%path = left_inverse) by exact (center _).], which should just work.  But it doesn't. *)
+    assert (1%path = left_inverse) by apply H.
+    assert (1%path = right_inverse) by apply H.
+    path_induction; reflexivity.
   Qed.
 End groupoid_category.

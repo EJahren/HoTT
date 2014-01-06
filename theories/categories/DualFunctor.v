@@ -45,7 +45,7 @@ Section opposite.
 
   Local Arguments path_sigma_uncurried : simpl never.
 
-  Definition opposite_functor_involutive
+  Definition opposite_functor_involutive `{Funext}
   : opposite_functor o opposite_functor = 1.
   Proof.
     path_functor.
@@ -57,6 +57,8 @@ Section opposite.
     rewrite !transport_projT1_path_sigma_uncurried.
     simpl in *.
     repeat progress change (fun x => ?f x) with f in *.
+    (* FIXME: This rewrite should work.
+Jason is really confused why the error messages afterwards indicate that it can't instantiate an existential with something that seems to be the right shape. (*
     match goal with
       | [ |- appcontext[transport
                           (fun x' => ?f x'.1 ?y)
@@ -64,10 +66,18 @@ Section opposite.
         => rewrite (@transport_projT1_path_sigma_uncurried
                       A P u v pq
                       (fun x => f x y))
+    end. *) *)
+    match goal with
+      | [ |- appcontext[transport
+                          (fun x' => ?f x'.1 ?y)
+                          (@path_sigma_uncurried ?A ?P ?u ?v ?pq)] ]
+        => rewrite (apD10 (@transport_projT1_path_sigma_uncurried
+                             A P u v pq
+                             (fun x => f x y)))
     end.
     simpl in *.
-    hnf in *.
     subst_body.
+    hnf in *.
     destruct_head @sigT.
     destruct_head @Functor.
     destruct_head @PreCategory.

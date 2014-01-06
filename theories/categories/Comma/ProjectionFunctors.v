@@ -23,7 +23,7 @@ Section comma.
   Variable P : PreCategory -> Type.
   Context `{HF : forall C D, P C -> P D -> IsHSet (Functor C D)}.
 
-  Local Notation Cat := (@sub_pre_cat _ P HF).
+  Local Definition Cat := (@sub_pre_cat _ P HF).
 
   Variable A : PreCategory.
   Variable B : PreCategory.
@@ -51,9 +51,11 @@ Section comma.
   Proof.
     exists (comma_category_induced_functor m) (center _).
     simpl.
-    destruct_head_hnf Datatypes.prod.
+    (* FIXME: this takes forever on the new Coq *)
+    (* destruct_head_hnf Datatypes.prod. *)
     path_functor.
-  Defined.
+  Defined. (* WTF? Anomaly: Backtrack.backto to a state with no vcs_backup. Please report. (in interactive mode) Then Anomaly: error with no safe_id attached:
+Uncaught exception Stm.Vcs_aux.Expired.. Please report. if I try to go back *)
 
   Local Ltac comma_laws_t :=
     repeat (apply path_forall || intro);
