@@ -57,8 +57,7 @@ Section opposite.
     rewrite !transport_projT1_path_sigma_uncurried.
     simpl in *.
     repeat progress change (fun x => ?f x) with f in *.
-    (* FIXME: This rewrite should work.
-Jason is really confused why the error messages afterwards indicate that it can't instantiate an existential with something that seems to be the right shape. (*
+    (* FIXME: This rewrite should work. (*
     match goal with
       | [ |- appcontext[transport
                           (fun x' => ?f x'.1 ?y)
@@ -76,8 +75,8 @@ Jason is really confused why the error messages afterwards indicate that it can'
                              (fun x => f x y)))
     end.
     simpl in *.
-    subst_body.
     hnf in *.
+    subst_body.
     destruct_head @sigT.
     destruct_head @Functor.
     destruct_head @PreCategory.
