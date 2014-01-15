@@ -133,7 +133,7 @@ Qed.
 
 Corollary FamequivPow `{Funext} : (A->Type)<~>(Fam A).
 exists p2f.
-apply (equiv_biinv_equiv _). exact PowisoFam.
+apply (equiv_biinv_equiv _).  exact PowisoFam.
 Qed.
 
 (* We construct the universal diagram for the object classifier *)
