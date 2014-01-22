@@ -232,6 +232,19 @@ Proof.
   apply contr.
 Qed.
 
+(** In fact it is enough that f has a retract in order
+for f to preserve contractability.*)
+Lemma contr_retr `(f : A -> B) `{Contr A} (g:B->A) : (Sect g f) -> Contr B.
+Proof.
+  unfold Sect.
+  intro sect.
+  exists (f (center A)).
+  intro y.
+  pose proof (fun (p:center A= g y) => ( ap f p @ sect y)).
+  apply X.
+  apply contr.
+Qed.
+
 Definition contr_equiv' `(f : A <~> B) `{Contr A}
   : Contr B
   := contr_equiv f.

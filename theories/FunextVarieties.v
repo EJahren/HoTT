@@ -1,8 +1,10 @@
 (* -*- mode: coq; mode: visual-line -*- *)
 (** Varieties of function extensionality *)
 
-Require Import Overture PathGroupoids Contractible Equivalences.
+Require Import Overture PathGroupoids Contractible Equivalences
+  EquivalenceVarieties types.Universe types.Sigma PathGroupoids.
 Local Open Scope path_scope.
+Local Open Scope equiv_scope.
 
 (** In the Overture, we defined function extensionality to be the assertion that the map [apD10] is an equivalence.   We now prove that this follows from a couple of weaker-looking forms of function extensionality.  We do require eta conversion, which Coq 8.4+ has judgmentally.
 
@@ -94,3 +96,63 @@ Proof.
   intros h; destruct h.
     refine (htpy_rect_beta wf _ _ _).
 Defined.
+
+
+(** Univalence implies a simple equivalence that can be used to prove WeakFunext.*)
+
+Check equiv_fun.
+Definition Preext
+  := forall (A B X : Type) (e:A <~> B), exists (e':(X->A) <~> (X->B)),
+ (equiv_fun _ _ e') = (fun f => (equiv_fun A B e) o f).
+
+Lemma Univalence_implies_Preext : Univalence -> Preext.
+  Proof.
+  intros U A B X e.
+  decompose record U.
+  pose proof (equiv_inv e).
+  apply (equiv_rect (equiv_path A B)
+    (fun e =>
+     {e' : (X -> A) <~> (X -> B) & (equiv_fun _ _ e')
+     = (fun f : X -> A =>(equiv_fun A B e) o f)})).
+  path_induction.
+  refine (BuildEquiv (X->A) (X->A) idmap _;_).
+  lazy.
+  reflexivity.
+  Defined.
+
+
+Lemma Preext_implies_WeakFunext : Preext -> WeakFunext.
+  Proof.
+  unfold Preext.
+  unfold WeakFunext.
+  intros preext A P f.
+  pose proof (preext _ _ A (equiv_sigma_contr P)) as H.
+  destruct H as [H0 H1] .
+  pose proof (fcontr_isequiv (equiv_fun _ _ H0) (equiv_isequiv _ _ H0) idmap).
+  assert (Contr {a : A -> exists x, P x & pr1 o a = idmap}).
+  exact (paths_ind (equiv_fun _ _ H0)
+    (fun y p => Contr {a : A -> {a' : A & P a'} & y a = idmap}) X
+    (fun g => pr1 o g) H1).
+  assert (exists
+      (r : (forall (x:A), P x)
+         -> {a:A -> exists x, P x & pr1 o a = idmap})
+      (s : {a:A -> exists x, P x & pr1 o a = idmap}
+         -> (forall (x:A), P x)),
+    Sect r s).
+  assert (forall (g:(forall x : A, P x)),pr1 o (fun (x : A) => (x; g x)) = idmap).
+  exact (fun g => idpath).
+  exists (fun g => (fun x => (x;g x);@idpath (A->A) (idmap))).
+  exists (fun (u:{a : A -> {x : A & P x} & proj1_sig o a = idmap}) =>
+    (fun (x:A) =>(apD10 (projT2 u) x) # (proj2_sig ((proj1_sig u) x)))).
+  exact (fun x => idpath).
+  destruct X1 as [r X1].
+  destruct X1 as [s sect].
+  Print contr_retr.
+  apply (contr_retr s r).
+  trivial.
+  Defined.
+
+Theorem Univalence_implies_Funext : Univalence -> Funext.
+  Proof.
+  exact (WeakFunext_implies_Funext  o Preext_implies_WeakFunext o Univalence_implies_Preext).
+  Defined.
