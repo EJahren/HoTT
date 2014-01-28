@@ -389,6 +389,25 @@ Proof.
   intros [a p]. apply path_sigma' with 1, contr.
 Defined.
 
+Definition equiv_sigma_contr' {A : Type} (P : A -> Type)
+  `{Contr A}
+  : {a:A & P a} <~> P (center A).
+Proof.
+  refine (equiv_adjointify
+    (fun (p:{a:A & P a}) => ((contr p.1)^ # p.2))
+    (fun (p:P (center A)) => (center A ; p))
+    _ _).
+  unfold Sect.  intros.  unfold projT2. unfold projT1.
+  assert (idpath = (contr (center A))^).
+  apply contr_paths_contr.
+  induction X.
+  apply (transport_1).
+  unfold Sect.  intros. unfold projT2.  unfold projT1.
+  induction x.
+  apply (path_sigma' (fun a : A => P a) (contr x)).
+  apply (transport_pV).
+Defined.
+
 (** *** Associativity *)
 
 Definition equiv_sigma_assoc `(P : A -> Type) (Q : {a : A & P a} -> Type)
